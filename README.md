@@ -1,2 +1,8 @@
-# Stock-Market-Data-Analysis
-End-to-end stock market data project: Python for cleaning/wrangling +SQL for querying + Power BI for visualization. Includes trend analysis, key insights, and a regression-based forecast to showcase both technical and business-focused data skills.
+# Python for Data Cleansing, Wrangling, and Transformation
+
+**Import raw data and show the first 10 rows:**
+
+```import pandas as pd
+df = pd.read_csv('raw_finance_data')
+print(df.head(10));```
+

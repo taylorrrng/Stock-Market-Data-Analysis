@@ -527,3 +527,61 @@ Analysis:
 - When analyzing the daily return % ((Close – Open) / Open) and daily volatility % ((High – Low) / Open) alongside trading volume for the top 15 companies by High_Total, MercadoLibre (MELI) stood out with the highest volatility at 0.04% and the second-highest return at 0.01%.
 
 - AutoZone (AZO) showed the lowest volatility (0.02%) and nearly zero return, while ASML Holding (ASML) and Thermo Fisher Scientific (TMO) had average return/volatility but very high volumes of 99M and 61.5M, demonstrating strong liquidity with more stability.
+
+# AI Machine Mearning Forecasting Visuals and Analysis
+
+**1. Forecasted High vs Low Totals**
+
+<img width="1779" height="980" alt="output (2)" src="https://github.com/user-attachments/assets/267856fd-a4cb-4877-82e1-78f4690c4d4d" />
+
+Analysis:
+
+- High totals are projected to grow +86.4% from the latest actual year to the end of the forecast horizon.
+
+- Low totals are forecasted to rise +85.5%, tracking closely with highs and maintaining a stable spread.
+
+- The parallel trend of highs and lows suggests steady momentum without major volatility spikes.
+
+- Market growth trajectory indicates that 2026 highs will nearly double 2023 levels, signaling strong long-term upside.
+
+**2. Forecasted Top 10 Leaders by High Totals**
+
+<img width="1771" height="1180" alt="output (3)" src="https://github.com/user-attachments/assets/ccb5b3e4-7130-49b6-939a-602c194506d1" />
+
+Analysis:
+
+- NVR leads the forecast with a High total ≈ 630,945, making it the strongest projected performer.
+
+- The gap between NVR and the next highest companies remains substantial, reinforcing its outlier dominance.
+
+- Most other top-10 companies cluster significantly lower, highlighting concentration of leadership in a few firms.
+
+- Overall, the forecast confirms NVR will prosper disproportionately relative to peers over the forecast horizon.
+
+**3. Forecasted Return % vs Volatility %, Bubble by Company**
+
+<img width="1779" height="1180" alt="output (4)" src="https://github.com/user-attachments/assets/8534d8a5-1ce7-4b30-9b47-2bd0d95cbc6c" />
+
+Analysis:
+
+- FICO is projected to have the highest forecast return % among the leaders, making it the strongest growth play.
+
+- REGN shows the lowest forecast volatility, appealing as a more defensive yet stable option.
+
+- NFLX carries the largest average trading volume, providing liquidity advantages even if not top on return or volatility.
+
+- The spread of bubbles shows that companies differ more on risk-return tradeoffs than volume, offering multiple strategies.
+
+**4. Forecasted Yearly Average Return % vs Volatility, Market Level**
+
+<img width="1779" height="980" alt="output (5)" src="https://github.com/user-attachments/assets/45d52b12-0b39-4a92-9dbb-a9facdfa4525" />
+
+Analysis:
+
+- Market returns trend upward, continuing their positive trajectory from recent years.
+
+- Volatility % also edges higher, but at a modest pace, indicating risk is not growing out of proportion.
+
+- The divergence between returns and volatility suggests improving market efficiency — better upside without extreme added risk.
+
+- By the forecast horizon, investors can expect higher average returns with only marginally higher volatility, a favorable market outlook.

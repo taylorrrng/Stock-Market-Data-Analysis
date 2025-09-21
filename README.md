@@ -468,3 +468,62 @@ LIMIT 1;
 
 # SQL Data Analysis
 
+- The daily analysis showed consistent dominance by companies like NVR, which repeatedly ranked #1 for daily High_Total values in 2023, hitting highs above $6,350 in November.
+
+- Looking at the 10 highest highs across all dates, every single peak was in 2023, with NVR reaching $6,356.19 at its maximum — far above any other company in previous years.
+
+- Yearly averages highlighted clear growth trends. 2023 averaged a High of $167.12, compared to only $102.33 in 2019 and $88.93 in 2018, showing how much the market strengthened over five years.
+
+- When rolling up to yearly totals (excluding volume), 2022 recorded the highest overall High_Total of 6,772,110, even though 2023 had stronger averages. This suggests 2022 had more trading days or broader activity, while 2023 had higher per-day values.
+
+- Dividends also grew steadily, with 2022 paying out the most in total ($369.95), compared to just $79.64 in 2018, showing long-term growth not just in prices but also in returns to shareholders.
+
+# Power BI Dashboards and Analysis
+
+**1. Dashboard 1: Market & Growth**
+
+![all_dashboards_page-0001](https://github.com/user-attachments/assets/29e689eb-645e-4d6d-9978-1b28560e2555)
+
+Analysis:
+
+- The year-over-year line chart shows that both average high and close stock prices climbed steadily from 2018–2023, with only a minor dip between 2021 and 2022. Growth was especially aggressive from 2018–2021, while 2022–2023 continued upward at a slower but still positive pace.
+
+- Average highs stayed only slightly above average closes, meaning the gap between the day’s high and close values was relatively small — an indicator of market stability rather than extreme swings.
+
+- The highest averages for both highs and closes were observed in 2023, while the lowest values occurred in 2018, reinforcing a clear long-term growth trend.
+
+- The dividend growth area chart reveals a sharp drop in 2020, followed by a steep recovery. From 2020 to 2023, total dividends quadrupled, underscoring investor confidence and company profitability in the later years.
+
+- Despite the 2020 dip, the overall 2018–2023 trajectory is upward across both price and dividend measures, confirming strong and consistent market expansion over the observed period.
+
+**2. Dashboard 2: Company Comparisons**
+
+![all_dashboards_page-0002](https://github.com/user-attachments/assets/55f98b17-f2dc-4861-904b-3b7449870816)
+
+Analysis:
+
+- The Total High Stock Prices by Company chart highlights an enormous gap between the top two performers. NVR, Inc. dominated with a total high stock price of $5.5M, which is almost double the second-place company, Booking Holdings (BKNG), at $2.7M.
+
+- Most companies landed in the $530K–$900K range, such as Chipotle Mexican Grill (CMG), AutoZone (AZO), and others. A mid-tier group including First Citizens BancShares (FCNCA), MercadoLibre (MELI), Mettler-Toledo (MTD), and others reached between $900K–$2M, but still fell far short of the top two.
+
+- This makes NVR the clear outlier in the dataset, far surpassing all competitors in total highs, while differences among mid- and lower-tier companies were more modest and less impactful.
+
+- The Total Dividends by Company Treemap shows TransDigm Group (TDG) as the dominant leader with 116 total dividends paid from 2018–2023. Other significant dividend contributors included BlackRock (BLK) with 82, Broadcom (AVGO) with 72, Equinix (EQIX) with 59, and Public Storage (PSA) with 56.
+
+- TDG’s dominance is even clearer when breaking down by year: in 2019, TDG contributed 32 dividends, while the next companies managed only 6.6 and 4.9; in 2023, TDG delivered 35 dividends, while the closest competitors had just 7.7 and 6.3, confirming TDG’s overwhelming leadership in dividends across the observed period.
+
+**3. Dashboard 3: Winners and Market Volatility**
+
+![all_dashboards_page-0003](https://github.com/user-attachments/assets/6e57b846-c7e2-492d-a563-4a1bff07cb09)
+
+Analysis:
+
+- In terms of total high stock prices by date, the maximum observed was $3.69M, representing the single strongest trading day across the dataset when summing all companies’ highs together.
+
+- The champion company during the observed period was NVR, Inc., which consistently secured the highest daily high stock prices, cementing its position as the market leader in overall price performance.
+
+- Across the period, the highest high stock prices per date exceeded the yearly average high stock price by 661%, showing just how extreme daily peaks could be compared to long-term averages.
+
+- When analyzing the daily return % ((Close – Open) / Open) and daily volatility % ((High – Low) / Open) alongside trading volume for the top 15 companies by High_Total, MercadoLibre (MELI) stood out with the highest volatility at 0.04% and the second-highest return at 0.01%.
+
+- AutoZone (AZO) showed the lowest volatility (0.02%) and nearly zero return, while ASML Holding (ASML) and Thermo Fisher Scientific (TMO) had average return/volatility but very high volumes of 99M and 61.5M, demonstrating strong liquidity with more stability.

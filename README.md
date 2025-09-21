@@ -1,4 +1,4 @@
-# Python for Data Cleansing, Wrangling, and Transformation
+# Python Codes for Data Cleansing, Wrangling, and Transformation
 
 **1. Import and Check Raw Data**
 
@@ -183,3 +183,288 @@ First 5 Rows:
 # Export cleaned dataset
 df.to_csv("cleaned_finance_data", index = False);
 ```
+
+# SQL Codes for Data Preparation, Aggregation, and Reporting
+
+**1. Create Formatted Table with Cleaned Data**
+
+```sql
+-- Create a table that keeps "$" and ","" formatting as TEXT
+CREATE TABLE stocks_formatted AS
+SELECT *
+FROM read_csv_auto('cleaned_finance_data', header = true, ALL_VARCHAR = true);
+```
+
+| Index | Count   |
+|-------|---------|
+| 0     | 602,962 |
+
+Column: Count  
+Data type: int64
+
+```sql
+SELECT * FROM stocks_formatted LIMIT 5;
+```
+
+| Date       | Open    | High    | Low     | Close   | Volume      | Dividends | Stock Splits | Company |
+|------------|---------|---------|---------|---------|-------------|-----------|--------------|---------|
+| 2018-11-29 | $43.83  | $43.86  | $42.64  | $43.08  | 167,080,000 | $0.00     | 0.0          | AAPL    |
+| 2018-11-29 | $104.77 | $105.52 | $103.53 | $104.64 | 28,123,200  | $0.00     | 0.0          | MSFT    |
+| 2018-11-29 | $54.18  | $55.01  | $54.10  | $54.73  | 31,004,000  | $0.00     | 0.0          | GOOGL   |
+| 2018-11-29 | $83.75  | $84.50  | $82.62  | $83.68  | 132,264,000 | $0.00     | 0.0          | AMZN    |
+| 2018-11-29 | $39.69  | $40.06  | $38.74  | $39.04  | 54,917,200  | $0.04     | 0.0          | NVDA    |
+
+**2. Covert Data Types to Numeric**
+
+```sql
+-- Parse the formatted text to numeric types for analysis
+CREATE VIEW stocks_clean AS
+SELECT
+    CAST(Date as DATE) AS Date,
+    Company,
+    CAST(REPLACE(REPLACE(Open,'$',''), ',','') AS DOUBLE)  AS Open,
+    CAST(REPLACE(REPLACE(High,'$',''), ',','') AS DOUBLE)  AS High,
+    CAST(REPLACE(REPLACE(Low,'$',''), ',','') AS DOUBLE)  AS Low,
+    CAST(REPLACE(REPLACE(Close,'$',''), ',','') AS DOUBLE)  AS Close,
+    CAST(REPLACE(Volume, ',', '') AS BIGINT)                 AS Volume,
+    CAST(REPLACE(REPLACE(Dividends, '$',''), ',','') AS DOUBLE) AS Dividends,
+FROM stocks_formatted;
+```
+
+Data type: int64
+
+```sql
+SELECT * FROM stocks_clean LIMIT 5;
+```
+
+| Date       | Company | Open   | High   | Low    | Close  | Volume   | Dividends |
+|------------|---------|--------|--------|--------|--------|----------|-----------|
+| 2018-11-29 | AAPL    | 43.83  | 43.86  | 42.64  | 43.08  | 167080000| 0.00      |
+| 2018-11-29 | MSFT    | 104.77 | 105.52 | 103.53 | 104.64 | 28123200 | 0.00      |
+| 2018-11-29 | GOOGL   | 54.18  | 55.01  | 54.10  | 54.73  | 31004000 | 0.00      |
+| 2018-11-29 | AMZN    | 83.75  | 84.50  | 82.62  | 83.68  | 132264000| 0.00      |
+| 2018-11-29 | NVDA    | 39.69  | 40.06  | 38.74  | 39.04  | 54917200 | 0.04      |
+
+**3. Summarise Metrics by Company and Date**
+
+```sql
+-- Aggregate metrics per company per date
+CREATE VIEW company_daily AS
+SELECT
+    Date,
+    Company,
+    SUM(Open) AS Open_Total,
+    SUM(High) AS High_Total,
+    SUM(Low) AS Low_Total,
+    SUM(Close) AS Close_Total,
+    SUM(Volume) AS Volume_Total,
+    SUM(Dividends) AS Dividends_Total
+FROM stocks_clean
+GROUP BY Date, Company,
+ORDER BY Date, Company;
+```
+
+Data type: int64
+
+```sql
+SELECT * FROM company_daily LIMIT 5;
+```
+
+| Date       | Company | Open_Total | High_Total | Low_Total | Close_Total | Volume_Total | Dividends_Total |
+|------------|---------|------------|------------|-----------|-------------|--------------|-----------------|
+| 2018-11-29 | A       | 68.67      | 69.59      | 68.67     | 69.00       | 2625800    | 0.0             |
+| 2018-11-29 | AAPL    | 43.83      | 43.86      | 42.64     | 43.08       | 167080000  | 0.0             |
+| 2018-11-29 | ABBV    | 70.47      | 71.52      | 69.96     | 71.18       | 3838000    | 0.0             |
+| 2018-11-29 | ABEV    | 3.61       | 3.67       | 3.58      | 3.63        | 36131600   | 0.0             |
+| 2018-11-29 | ABT     | 66.60      | 67.77      | 66.55     | 67.37       | 6447700    | 0.0             |
+
+**4. Show Top 5 Companies by Highest High Stock Price by Date**
+
+```sql
+-- Top 5 companies per date by High_Total
+SELECT
+    Date,
+    Company,
+    Open_Total,
+    High_Total,
+    Low_Total,
+    Close_Total,
+    Volume_Total,
+    Dividends_Total
+FROM (
+    SELECT
+        Date,
+        Company,
+        Open_Total,
+        High_Total,
+        Low_Total,
+        Close_Total,
+        Volume_Total,
+        Dividends_Total,
+        ROW_NUMBER() OVER(
+            PARTITION BY Date
+            ORDER BY High_Total DESC, Company
+        ) AS rn
+    FROM company_daily
+) t
+WHERE rn <=5
+ORDER BY Date, rn
+LIMIT 15;
+```
+
+| Date       | Company | Open_Total | High_Total | Low_Total | Close_Total | Volume_Total | Dividends_Total |
+|------------|---------|------------|------------|-----------|-------------|--------------|-----------------|
+| 2018-11-29 | NVR     | 2547.50    | 2569.85    | 2457.10   | 2473.77     | 20500        | 0.0             |
+| 2018-11-29 | BKNG    | 1866.00    | 1885.15    | 1859.71   | 1865.15     | 358100       | 0.0             |
+| 2018-11-29 | AZO     | 835.53     | 836.74     | 824.02    | 825.83      | 279200       | 0.0             |
+| 2018-11-29 | MTD     | 620.13     | 638.18     | 619.98    | 630.92      | 120000       | 0.0             |
+| 2018-11-29 | CMG     | 489.95     | 493.98     | 482.14    | 482.56      | 426700       | 0.0             |
+| 2018-11-30 | NVR     | 2480.00    | 2498.00    | 2435.33   | 2450.00     | 37800        | 0.0             |
+| 2018-11-30 | BKNG    | 1868.32    | 1897.11    | 1852.80   | 1891.88     | 361000       | 0.0             |
+| 2018-11-30 | AZO     | 827.09     | 827.09     | 804.57    | 809.07      | 602900       | 0.0             |
+| 2018-11-30 | MTD     | 631.45     | 639.23     | 627.34    | 636.66      | 175400       | 0.0             |
+| 2018-11-30 | CMG     | 480.57     | 482.55     | 463.00    | 473.21      | 956200       | 0.0             |
+| 2018-12-03 | NVR     | 2472.44    | 2547.37    | 2472.44   | 2542.45     | 33000        | 0.0             |
+| 2018-12-03 | BKNG    | 1904.00    | 1928.78    | 1879.29   | 1880.00     | 474200       | 0.0             |
+| 2018-12-03 | AZO     | 829.00     | 835.83     | 817.00    | 820.00      | 513000       | 0.0             |
+| 2018-12-03 | MTD     | 637.52     | 651.39     | 634.35    | 650.26      | 158500       | 0.0             |
+| 2018-12-03 | CMG     | 486.00     | 490.57     | 483.29    | 487.00      | 507400       | 0.0             |
+
+**5. Show Highest High Stock Price across All Dates**
+
+```sql
+-- One company per date with the highest High_Total
+SELECT
+  Date,
+  Company,
+  Open_Total,
+  High_Total,
+  Low_Total,
+  Close_Total,
+  Volume_Total,
+  Dividends_Total
+FROM (
+  SELECT
+    Date,
+    Company,
+    Open_Total,
+    High_Total,
+    Low_Total,
+    Close_Total,
+    Volume_Total,
+    Dividends_Total,
+    ROW_NUMBER() OVER (
+      PARTITION BY Date
+      ORDER BY High_Total DESC, Company
+    ) AS rn
+  FROM company_daily
+) t
+WHERE rn = 1
+ORDER BY High_Total DESC
+LIMIT 10;
+```
+
+| Date       | Company | Open_Total | High_Total | Low_Total | Close_Total | Volume_Total | Dividends_Total |
+|------------|---------|------------|------------|-----------|-------------|--------------|-----------------|
+| 2023-11-14 | NVR     | 6170.00    | 6356.19    | 6170.00   | 6290.72     | 22200        | 0               |
+| 2023-11-22 | NVR     | 6276.77    | 6350.00    | 6194.07   | 6222.89     | 12800        | 0               |
+| 2023-11-15 | NVR     | 6275.00    | 6350.00    | 6267.09   | 6292.17     | 19300        | 0               |
+| 2023-11-16 | NVR     | 6293.50    | 6349.49    | 6236.84   | 6290.59     | 25000        | 0               |
+| 2023-11-21 | NVR     | 6290.01    | 6344.91    | 6239.37   | 6310.92     | 18500        | 0               |
+| 2023-11-20 | NVR     | 6290.01    | 6344.91    | 6226.37   | 6244.84     | 22200        | 0               |
+| 2023-11-17 | NVR     | 6310.92    | 6349.49    | 6226.37   | 6290.59     | 24000        | 0               |
+| 2023-11-13 | NVR     | 6349.49    | 6356.19    | 6236.84   | 6292.17     | 19900        | 0               |
+| 2023-11-10 | NVR     | 6350.00    | 6356.19    | 6236.84   | 6292.17     | 22200        | 0               |
+| 2023-11-09 | NVR     | 6344.91    | 6350.00    | 6236.84   | 6292.17     | 24000        | 0               |
+
+**5. Aggregate Yearly Averages of All Stock Metrics**
+
+```sql
+-- Yearly average for all metrics
+CREATE OR REPLACE VIEW yearly_average AS
+SELECT
+  EXTRACT(YEAR FROM Date) AS Year,
+  AVG(Open) AS Avg_Open,
+  AVG(High) AS Avg_High,
+  AVG(Low) AS Avg_Low,
+  AVG(Close) AS Avg_Close,
+  AVG(Volume) AS Avg_Volume,
+  AVG(Dividends) AS Avg_Dividends
+FROM stocks_clean
+WHERE Date IS NOT NULL
+GROUP BY Year;
+```
+
+Data type: int64
+
+```sql
+-- Show all average metrics for each year (latest to oldest)
+SELECT * FROM yearly_average
+ORDER BY Avg_High DESC;
+```
+
+| Year | Avg_Open | Avg_High | Avg_Low | Avg_Close | Avg_Volume | Avg_Dividends |
+|------|----------|----------|---------|-----------|------------|---------------|
+| 2023 | 165.151  | 167.121  | 163.416 | 165.391   | 5412390    | 0.00980594    |
+| 2021 | 160.368  | 162.501  | 158.020 | 160.237   | 6158960    | 0.00803593    |
+| 2022 | 159.418  | 161.734  | 156.901 | 159.265   | 6443220    | 0.00883526    |
+| 2020 | 126.420  | 128.031  | 124.802 | 126.439   | 6359220    | 0.00734392    |
+| 2019 | 101.324  | 102.330  | 100.394 | 101.456   | 5277750    | 0.00801281    |
+| 2018 | 87.694   | 88.929   | 86.075  | 87.318    | 6932500    | 0.00826656    |
+
+**6. Year with the Highest Average High Stock Price**
+
+```sql
+-- Show the year with the highest Avg_High
+SELECT * FROM yearly_average
+ORDER BY Avg_High DESC
+LIMIT 1;
+```
+
+| Year | Avg_Open | Avg_High | Avg_Low | Avg_Close | Avg_Volume | Avg_Dividends |
+|------|----------|----------|---------|-----------|------------|---------------|
+| 2023 | 165.151  | 167.121  | 163.416 | 165.391   | 5412390    | 0.00980594    |
+
+**7. Aggregate Yearly Totals for All Stock Metrics**
+
+```sql
+-- Yearly totals for all metrics except Volume
+CREATE OR REPLACE VIEW yearly_total AS
+SELECT
+    EXTRACT(YEAR FROM Date) AS Year,
+    SUM(Open_Total) AS Total_Open,
+    SUM(High_Total) AS Total_High,
+    SUM(Low_Total) AS Total_Low,
+    SUM(Close_Total) AS Total_Close,
+    SUM(Dividends_Total) AS Total_Dividends
+FROM company_daily
+WHERE Date IS NOT NULL
+GROUP BY Year
+ORDER BY Year DESC;
+SELECT * FROM yearly_total;
+```
+
+| Year | Total_Open | Total_High | Total_Low | Total_Close | Total_Dividends |
+|------|------------|------------|-----------|-------------|-----------------|
+| 2023 | 5174190    | 5235890    | 5119810   | 5181690     | 307.22          |
+| 2022 | 6675150    | 6772110    | 6569770   | 6668720     | 369.95          |
+| 2021 | 6640690    | 6729020    | 6543470   | 6635240     | 332.76          |
+| 2020 | 5216100    | 5282580    | 5149350   | 5216870     | 303.01          |
+| 2019 | 4051030    | 4091260    | 4013860   | 4056330     | 320.36          |
+| 2018 | 844845     | 856744     | 829246    | 841221      | 79.64           |
+
+**8. Year wtih the Highest Total High Stock Price**
+
+```sql
+-- Show the year wtih the highest Total_High
+SELECT * FROM yearly_total
+ORDER BY Total_High DESC
+LIMIT 1;
+```
+
+| Year | Total_Open | Total_High | Total_Low | Total_Close | Total_Dividends |
+|------|------------|------------|-----------|-------------|-----------------|
+| 2022 | 6675150    | 6772110    | 6569770   | 6668720     | 369.95          |
+
+# SQL Data Analysis
+

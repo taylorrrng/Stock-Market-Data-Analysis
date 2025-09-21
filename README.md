@@ -1,3 +1,17 @@
+# Introduction
+
+This project encompasses the full analytics pipeline: cleaning financial stock data in Python, aggregating with SQL, visualizing in Power BI, and applying machine learning for forecasting. I worked through data wrangling, transformation, aggregation, visualization, and predictive modeling to analyze stock performance and trends.
+
+# Goals:
+
+- Python: Clean raw data, resolve duplicates/nulls, and format columns.
+
+- SQL: Build views, aggregate metrics by company/date, and compute yearly measures.
+
+- Power BI: Design dashboards to show trends, comparisons, and daily champions.
+
+- AI/ML Forecasting: Apply regression models to project highs, lows, returns, and volatilities.
+
 # Python Codes for Data Cleansing, Wrangling, and Transformation
 
 **1. Import and Check Raw Data**
